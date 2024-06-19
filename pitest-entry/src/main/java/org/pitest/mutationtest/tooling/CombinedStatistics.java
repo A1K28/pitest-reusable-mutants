@@ -1,6 +1,7 @@
 package org.pitest.mutationtest.tooling;
 
 import org.pitest.coverage.CoverageSummary;
+import org.pitest.mutationtest.MutationMetaData;
 import org.pitest.mutationtest.statistics.MutationStatistics;
 import org.pitest.mutationtest.verify.BuildMessage;
 
@@ -13,12 +14,22 @@ public class CombinedStatistics {
 
   private final List<BuildMessage> issues;
 
+  private List<MutationMetaData> mutationMetaData;
+
   public CombinedStatistics(MutationStatistics mutationStatistics,
                             CoverageSummary coverageSummary,
                             List<BuildMessage> issues) {
     this.mutationStatistics = mutationStatistics;
     this.coverageSummary = coverageSummary;
     this.issues = issues;
+  }
+
+  public List<MutationMetaData> getMutationMetaData() {
+    return this.mutationMetaData;
+  }
+
+  public void setMutationMetaData(List<MutationMetaData> metaDataList) {
+    this.mutationMetaData = mutationMetaData;
   }
 
   public MutationStatistics getMutationStatistics() {

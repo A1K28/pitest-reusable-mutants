@@ -37,7 +37,7 @@ public class MutationAnalysisExecutor {
   }
 
   // entry point for mutation testing
-  public void run(final List<MutationAnalysisUnit> testUnits) {
+  public List<MutationMetaData> run(final List<MutationAnalysisUnit> testUnits) {
 
     LOG.fine("Running " + testUnits.size() + " units");
 
@@ -52,20 +52,25 @@ public class MutationAnalysisExecutor {
 
     this.executor.shutdown();
 
+    List<MutationMetaData> metaDataList = null;
     try {
-      processResult(results);
+      metaDataList = processResult(results);
     } catch (final InterruptedException | ExecutionException e) {
       throw Unchecked.translateCheckedException(e);
     }
 
     signalRunEndToAllListeners();
 
+    return metaDataList;
+
   }
 
-  private void processResult(List<Future<MutationMetaData>> results)
+  private List<MutationMetaData> processResult(List<Future<MutationMetaData>> results)
           throws InterruptedException, ExecutionException {
+    List<MutationMetaData> metaDataList = new ArrayList<>();
     for (Future<MutationMetaData> f : results) {
       MutationMetaData metaData = f.get();
+      metaDataList.add(metaData);
       for (ClassMutationResults cr : resultInterceptor.modify(metaData.toClassResults())) {
         for (MutationResultListener listener : this.listeners) {
           listener.handleMutationResult(cr);
@@ -81,6 +86,7 @@ public class MutationAnalysisExecutor {
       }
     }
 
+    return metaDataList;
   }
 
   private void signalRunStartToAllListeners() {

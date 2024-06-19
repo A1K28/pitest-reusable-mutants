@@ -27,12 +27,7 @@ import org.pitest.coverage.NoCoverage;
 import org.pitest.coverage.ReportCoverage;
 import org.pitest.help.Help;
 import org.pitest.help.PitHelpError;
-import org.pitest.mutationtest.History;
-import org.pitest.mutationtest.EngineArguments;
-import org.pitest.mutationtest.ListenerArguments;
-import org.pitest.mutationtest.MutationConfig;
-import org.pitest.mutationtest.MutationResultInterceptor;
-import org.pitest.mutationtest.MutationResultListener;
+import org.pitest.mutationtest.*;
 import org.pitest.mutationtest.build.MutationAnalysisUnit;
 import org.pitest.mutationtest.build.MutationGrouper;
 import org.pitest.mutationtest.build.MutationInterceptor;
@@ -175,7 +170,7 @@ public class MutationCoverage {
     final MutationAnalysisExecutor mae = new MutationAnalysisExecutor(
         numberOfThreads(), resultInterceptor(), config);
     this.timings.registerStart(Timings.Stage.RUN_MUTATION_TESTS);
-    mae.run(tus);
+    List<MutationMetaData> metaDataList = mae.run(tus);
     this.timings.registerEnd(Timings.Stage.RUN_MUTATION_TESTS);
 
     LOG.info("Completed in " + timeSpan(t0));
@@ -183,6 +178,7 @@ public class MutationCoverage {
     MutationStatistics mutationStats = stats.getStatistics();
     CombinedStatistics combined = new CombinedStatistics(mutationStats,
             createSummary(modifiedCoverage, mutationStats.mutatedClasses()), issues);
+    combined.setMutationMetaData(metaDataList);
 
     printStats(combined);
 
