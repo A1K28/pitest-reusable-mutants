@@ -29,7 +29,7 @@ public class CombinedStatistics {
   }
 
   public void setMutationMetaData(List<MutationMetaData> metaDataList) {
-    this.mutationMetaData = mutationMetaData;
+    this.mutationMetaData = metaDataList;
   }
 
   public MutationStatistics getMutationStatistics() {
